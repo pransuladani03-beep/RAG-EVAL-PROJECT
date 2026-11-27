@@ -29,7 +29,7 @@ def normalize_query_for_retrieval(query: str) -> str:
 
 
 class RagPipeline:
-    def __init__(self, fetch_k=20, top_k=3, min_score=0.39):
+    def __init__(self, fetch_k=25, top_k=6, min_score=0.38):
         # Safely initialize RerankingRetriever with only the keyword arguments it accepts
         sig_params = inspect.signature(RerankingRetriever.__init__).parameters
         kwargs = {}

@@ -1,3 +1,5 @@
+import inspect
+
 try:
     from langsmith import traceable
 except ImportError:
@@ -27,9 +29,18 @@ def normalize_query_for_retrieval(query: str) -> str:
 
 
 class RagPipeline:
-    def __init__(self, fetch_k=25, top_k=6, min_score=0.38):
-        # one retriever instance — loads the store + reranker model once
-        self.retriever = RerankingRetriever(fetch_k=fetch_k, top_k=top_k)
+    def __init__(self, fetch_k=10, top_k=5, min_score=0.38):
+        # Safely initialize RerankingRetriever with only the keyword arguments it accepts
+        sig_params = inspect.signature(RerankingRetriever.__init__).parameters
+        kwargs = {}
+        if "fetch_k" in sig_params:
+            kwargs["fetch_k"] = fetch_k
+        if "top_k" in sig_params:
+            kwargs["top_k"] = top_k
+        elif "k" in sig_params:
+            kwargs["k"] = top_k
+
+        self.retriever = RerankingRetriever(**kwargs)
         self.top_k = top_k
         self.min_score = min_score
 
